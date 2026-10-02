@@ -37,3 +37,14 @@ test("48 kHz input gives the same timeline as 16 kHz", () => {
   const agree = a.filter((v, i) => v === b[i]).length / n;
   assert.ok(agree > 0.9, `agreement ${agree}`);
 });
+
+test("a one-frame p/b/m is kept only right after silence", () => {
+  const ids = (frames: number[]) => {
+    const events: VisemeEvent[] = [];
+    const detector = new VisemeDetector(model, 16000, 0, (e) => events.push(e));
+    for (const f of [...Array(model.lookahead).fill(0), ...frames]) (detector as unknown as { onFrame(v: number): void }).onFrame(f);
+    return events.map((e) => e.id);
+  };
+  assert.deepEqual(ids([0, 0, 21, 1, 1]), [0, 21, 1]); // "b" at a word start: only the release is audible
+  assert.deepEqual(ids([1, 1, 21, 1, 1]), [1]); // mid-word one-frame blip still filtered
+});

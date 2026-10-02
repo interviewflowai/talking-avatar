@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-02
+
+### Changed
+
+- Retrained viseme model: the "th" in *think* and *three* now shows the TH mouth shape (76% of test frames, up
+  from 11%); overall shape accuracy 82.3% (was 81.7%).
+
+### Fixed
+
+- A p/b/m at the start of a word now closes the lips; it was dropped when the model heard it for only one frame.
+- The first viseme event could be timed slightly before the audio started.
+
 ## [0.1.0] - 2026-10-02
 
 ### Added

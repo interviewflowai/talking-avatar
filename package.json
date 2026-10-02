@@ -1,6 +1,6 @@
 {
   "name": "@interviewflowai/talking-avatar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Real-time lip sync for 3D avatars from any audio stream, by InterviewFlowAI. Free for personal and non-commercial use.",
   "license": "PolyForm-Noncommercial-1.0.0",
   "author": "InterviewFlowAI",
