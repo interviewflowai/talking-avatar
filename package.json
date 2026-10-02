@@ -4,6 +4,13 @@
   "description": "Real-time lip sync for 3D avatars from any audio stream, by InterviewFlowAI. Free for personal and non-commercial use.",
   "license": "PolyForm-Noncommercial-1.0.0",
   "author": "InterviewFlowAI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interviewflowai/talking-avatar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/interviewflowai/talking-avatar/issues"
+  },
   "type": "module",
   "sideEffects": false,
   "exports": {
