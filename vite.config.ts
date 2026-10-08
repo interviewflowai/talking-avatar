@@ -8,7 +8,7 @@ export default defineConfig({
   define: { __VERSION__: JSON.stringify(version) },
   build: {
     lib: {
-      entry: { index: "src/index.ts", react: "src/react.tsx" },
+      entry: { index: "src/index.ts", react: "src/react.tsx", server: "src/server.ts", live: "src/live.ts" },
       formats: ["es"],
     },
     rollupOptions: {

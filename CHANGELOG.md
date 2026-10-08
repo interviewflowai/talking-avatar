@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Realistic Avatars: photorealistic talking avatars streamed to your page, billed per minute.
+  `LiveAvatar` (`@interviewflowai/talking-avatar/server`) runs the session on your server: TTS audio in any chunking
+  or base64, barge-in with how much was heard, speech events, and one route for the page (`handleView`), or
+  publishing into your LiveKit room. `LiveAvatarView` (`@interviewflowai/talking-avatar/live`) plays it in the page
+  over WebRTC and reconnects by itself.
+
+### Changed
+
+- Licensed under MIT (was PolyForm Noncommercial 1.0.0): free for any use, commercial included.
+- `three` is now an optional peer dependency: only `TalkingAvatar` needs it.
+
 ## [0.1.1] - 2026-10-02
 
 ### Changed

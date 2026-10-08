@@ -1,50 +1,254 @@
-# @interviewflowai/talking-avatar
+# Talking Avatar
 
 [![npm](https://img.shields.io/npm/v/@interviewflowai/talking-avatar)](https://www.npmjs.com/package/@interviewflowai/talking-avatar)
 [![license](https://img.shields.io/npm/l/@interviewflowai/talking-avatar)](LICENSE)
 [![types](https://img.shields.io/npm/types/@interviewflowai/talking-avatar)](src/index.ts)
 
-Real-time lip sync for 3D avatars, from any audio. Give it an avatar URL and an audio stream; a small model listens
-to the audio in the browser and drives the avatar's mouth. No text, no phoneme timings, no TTS-provider visemes,
-no server. Built by [InterviewFlowAI](https://interviewflowai.com), free for personal and non-commercial use
-([commercial licences](#license) available).
+**Give your voice agent a face.** Talking Avatar turns any voice, from any text-to-speech engine or voice agent, into
+a lifelike talking avatar on your page, in real time.
 
-**[Website](https://talking-avatar.dev) · [Live demo](https://talking-avatar.dev/demo)**
+**[Website](https://talking-avatar.dev) · [Live demo](https://talking-avatar.dev/demo) ·
+[Create an account](https://talking-avatar.dev)**
+
+| | **Realistic Avatars** | **Open-source 3D lip sync** |
+|---|---|---|
+| What you get | Photorealistic people with natural expressions and head motion | Your own 3D `.glb` avatars, lip synced in the browser |
+| Price | **$0.02 per minute**, pay as you go | **Free** (MIT) |
+| Runs | Fully managed: streamed to your page in real time | In your user's browser, no server |
+| Setup | Create an account, add credits, get an API key | `npm install`, nothing else |
+| Get started | [Realistic Avatars](#realistic-avatars) | [Open-source 3D lip sync](#open-source-3d-lip-sync) |
+
+Both ship in one package, [`@interviewflowai/talking-avatar`](https://www.npmjs.com/package/@interviewflowai/talking-avatar).
+
+## Contents
+
+- [Realistic Avatars](#realistic-avatars)
+  - [See them talk](#see-them-talk)
+  - [Pricing](#pricing)
+  - [Get started](#get-started)
+  - [Your server](#your-server)
+  - [Your page](#your-page)
+  - [LiveKit](#livekit)
+  - [Avatars](#realistic-avatar-catalogue)
+  - [Sessions and errors](#sessions-and-errors)
+  - [API reference](#realistic-avatars-api-reference)
+- [Open-source 3D lip sync](#open-source-3d-lip-sync)
+  - [Features](#features)
+  - [Quick start](#quick-start)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Best results](#best-results)
+  - [API reference](#api-reference)
+  - [Avatars](#avatars)
+  - [Self-hosting the model](#self-hosting-the-model)
+  - [How it works](#how-it-works)
+  - [Accuracy and limitations](#accuracy-and-limitations)
+  - [Performance](#performance)
+  - [Browser support](#browser-support)
+  - [Troubleshooting](#troubleshooting)
+  - [Model and training data](#model-and-training-data)
+- [FAQ](#faq)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+
+# Realistic Avatars
+
+Photorealistic talking avatars for voice agents, AI interviewers, tutors, support and sales assistants. Send your
+agent's voice as it's generated; your users see a real-looking person say it, with accurate lip sync, natural
+expressions and subtle head motion, streamed to your page in real time.
+
+- **Any voice:** OpenAI, ElevenLabs, Azure, Fish Audio, Cartesia, or any other TTS or speech-to-speech model. The
+  avatar follows the audio, so no text or timings are needed.
+- **Real time:** speech appears on the avatar's lips moments after you send it, ready for live conversation.
+  Interruptions (barge-in) are handled in one call.
+- **Voice and video in sync,** delivered together over WebRTC. No media servers to run.
+- **Drop-in for LiveKit:** the avatar can join your LiveKit room as a participant instead.
+- **A few lines of code** on your server and your page. The SDK handles streaming, playback and reconnection.
+
+<a id="see-them-talk"></a>
+
+## See them talk
+
+Recorded live through the SDK, with OpenAI TTS voices.
+
+| Friendly host (`ava6`) | Friendly coach (`ava7`) |
+|---|---|
+| [![Friendly host demo](POSTER_URL_AVA6)](VIDEO_URL_AVA6) | [![Friendly coach demo](POSTER_URL_AVA7)](VIDEO_URL_AVA7) |
+
+VIDEO_URL_AVA6
+
+VIDEO_URL_AVA7
+
+## Pricing
+
+**$0.02 per minute** of avatar session, billed by the second. No subscription, no minimum, no setup fee.
+
+1. [Create an account](https://talking-avatar.dev).
+2. Add credits, and turn on auto top-up if you'd like your balance refilled automatically.
+3. Create an API key and start building.
+
+$10 of credits is 500 minutes of conversation. Usage and spend are shown live in the dashboard.
+
+## Get started
+
+```sh
+npm install @interviewflowai/talking-avatar
+```
+
+The SDK has two parts, because your API key must stay on your server:
+
+| Import | Runs on | Does |
+|---|---|---|
+| `@interviewflowai/talking-avatar/server` → `LiveAvatar` | your server (Node.js 22+) | starts the avatar, sends your agent's voice, handles interruptions |
+| `@interviewflowai/talking-avatar/live` → `LiveAvatarView` | your page | shows the avatar with its voice, reconnects by itself |
+
+<a id="your-server"></a>
+
+### Your server
+
+```js
+import { LiveAvatar } from "@interviewflowai/talking-avatar/server";
+
+const avatar = await LiveAvatar.start({
+  apiKey: process.env.TALKING_AVATAR_API_KEY, // tav_…
+  avatar: "ava6",
+  sampleRate: 24000,                           // your TTS audio's sample rate
+});
+
+// One route for your page. It sets up the video connection; any number of viewers.
+app.post("/avatar", async (req, res) => {
+  try {
+    res.json(await avatar.handleView(req.body));
+  } catch (error) {
+    res.status(503).json({ error: error.message });
+  }
+});
+
+// Your agent's voice as it streams: PCM16 mono, as an Int16Array, a Buffer or base64.
+tts.on("audio", (pcm) => avatar.pushAudio(pcm));
+
+// The user interrupted: stop speaking. Resolves with how much of the reply they heard.
+const heardMs = await avatar.clear();
+
+avatar.on("speechStarted", () => {});
+avatar.on("speechEnded", (playedMs) => {});
+avatar.close(); // end of the conversation: billing stops
+```
+
+The avatar plays the voice itself, in sync with its lips, so don't play your TTS audio anywhere else. Audio can
+arrive faster than real time; it's queued and spoken at its natural pace.
+
+<a id="your-page"></a>
+
+### Your page
+
+```js
+import { LiveAvatarView } from "@interviewflowai/talking-avatar/live";
+
+const view = new LiveAvatarView({
+  container: document.getElementById("avatar"), // the video fills this element
+  endpoint: "/avatar",                          // the route above
+});
+
+document.getElementById("start").onclick = () => view.connect(); // after a click, so the voice can play
+```
+
+Running several conversations at once? Keep one `LiveAvatar` per conversation and give each its own route, such as
+`/avatar/:conversationId`.
+
+<a id="livekit"></a>
+
+### LiveKit
+
+Already using LiveKit? The avatar can join your room instead, with its video and voice as tracks. Mint a
+publish-only token for it; your LiveKit secrets stay with you.
+
+```js
+const avatar = await LiveAvatar.start({
+  apiKey: process.env.TALKING_AVATAR_API_KEY,
+  avatar: "ava6",
+  livekit: { url: LIVEKIT_URL, token: avatarToken }, // video track "avatar", voice track "avatar-audio"
+});
+tts.on("audio", (pcm) => avatar.pushAudio(pcm));
+```
+
+Your LiveKit client plays the tracks, so `LiveAvatarView` isn't needed.
+
+<a id="realistic-avatar-catalogue"></a>
+
+### Avatars
+
+| ID | Name | Style |
+|---|---|---|
+| `ava4` | Male interviewer: dark suit, office | Professional |
+| `ava5` | Female interviewer: blazer, office | Professional |
+| `ava6` | Friendly host: navy henley, home study | Casual |
+| `ava7` | Friendly coach: knit cardigan, living room | Casual |
+
+All avatars stream at 832×468 (16:9), 25 frames per second. `LiveAvatarView` fits the video inside its container
+without cropping. More avatars are on the way; previews are in the dashboard.
+
+### Sessions and errors
+
+A session is billed from the moment the avatar is live until you call `close()` (or your server disconnects).
+`LiveAvatar.start` rejects with a `LiveAvatarError` when a session can't start, and the `close` event reports why a
+session ended:
+
+| Code | Meaning |
+|---|---|
+| `1000` | You closed the session |
+| `4001` | Invalid or missing API key |
+| `4002` | Balance below one minute: add credits or turn on auto top-up |
+| `4003` | The session reached its 3-hour limit |
+
+<a id="realistic-avatars-api-reference"></a>
+
+### API reference
+
+#### `LiveAvatar.start(options)` (from `@interviewflowai/talking-avatar/server`)
+
+Resolves with a `LiveAvatar` once the avatar is live.
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `apiKey` | `string` | required | Your `tav_…` key. Keep it on your server. |
+| `avatar` | `string` | required | An avatar ID, such as `"ava6"`. |
+| `sampleRate` | `8000 \| 12000 \| 16000 \| 24000 \| 48000` | `24000` | Your TTS audio's sample rate (PCM16 mono). |
+| `livekit` | `{ url, token, publishAudio?, audioTrackName? }` | | Join your LiveKit room instead of streaming to `LiveAvatarView`. With `publishAudio: false` you play the voice yourself and pass `playAtMs` to `pushAudio`. |
+| `WebSocket` | class | global `WebSocket` | For Node.js 18 and 20: `import WebSocket from "ws"`. |
+
+| Member | Description |
+|---|---|
+| `pushAudio(pcm, { sampleRate?, playAtMs? })` | Queue your agent's voice: `Int16Array`, bytes (`Buffer`, `Uint8Array`, `ArrayBuffer`) or base64, in chunks of any size. |
+| `clear()` | Interrupt. Resolves with how many ms of the interrupted reply were heard. |
+| `handleView(body)` | Your page's route: pass the request body, return the result as JSON. |
+| `on(event, listener)` | `speechStarted`, `speechEnded(playedMs)`, `republished` (recovered from a network drop; the page reconnects by itself), `close(code, reason)`. Returns an unsubscribe function. |
+| `close()` | End the session. Billing stops. |
+| `width`, `height` | The video size. |
+
+#### `new LiveAvatarView(options)` (from `@interviewflowai/talking-avatar/live`)
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `container` | `HTMLElement` | required | Element the video fills, or your own `<video>`. |
+| `endpoint` | `string \| (body) => Promise<object>` | required | Your route, or a function that calls it (for example, with auth headers). |
+| `iceServers` | `RTCIceServer[]` | public STUN | Add your TURN server for users behind strict firewalls. |
+| `onStatus` | `(status) => void` | | `connecting`, `live`, `muted` (the browser blocked sound: call `unmute()` from a click), `reconnecting`, `closed`. |
+| `onError` | `(error) => void` | `console.warn` | Connection errors. It retries by itself. |
+
+Methods: `connect()`, `disconnect()`, `unmute()`. Properties: `video` (the `<video>` element), `status`.
+
+# Open-source 3D lip sync
+
+Free and open source (MIT). Real-time lip sync for your own 3D avatars, from any audio. Give it an avatar URL and an
+audio stream; a small model listens to the audio in the browser and drives the avatar's mouth. No text, no phoneme
+timings, no TTS-provider visemes, no server, no API key.
 
 ```js
 const avatar = new TalkingAvatar({ container, avatarUrl: "https://example.com/avatar.glb" });
 avatar.attachStream(voiceAgentAudio);
 ```
-
-## Contents
-
-- [Features](#features)
-- [Quick start](#quick-start)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Live audio streams](#live-audio-streams)
-  - [Audio clips](#audio-clips)
-  - [React](#react)
-  - [Voice agents: OpenAI Realtime, LiveKit, Daily](#voice-agents)
-  - [Changing the avatar](#changing-the-avatar)
-  - [Listening and thinking](#listening-and-thinking)
-  - [Cleaning up](#cleaning-up)
-  - [Autoplay](#autoplay)
-- [Best results](#best-results)
-- [API reference](#api-reference)
-- [Avatars](#avatars)
-- [Self-hosting the model](#self-hosting-the-model)
-- [How it works](#how-it-works)
-- [Accuracy and limitations](#accuracy-and-limitations)
-- [Performance](#performance)
-- [Browser support](#browser-support)
-- [Troubleshooting](#troubleshooting)
-- [FAQ](#faq)
-- [Demo](#demo)
-- [Development](#development)
-- [Contributing](#contributing)
-- [Model and training data](#model-and-training-data)
-- [License and commercial use](#license)
 
 ## Features
 
@@ -98,7 +302,7 @@ pnpm add @interviewflowai/talking-avatar three
 yarn add @interviewflowai/talking-avatar three
 ```
 
-`three` (≥ 0.160) is a peer dependency. React (≥ 18) is only needed for the React component. The package is
+`three` (≥ 0.160) is needed for the 3D avatars. React (≥ 18) is only needed for the React component. The package is
 ESM-only.
 
 **Without a bundler,** use an import map:
@@ -404,39 +608,43 @@ Needs WebGL 2 and Web Audio with `AudioWorklet`, which current Chrome, Edge, Fir
 | Lips look late | `streamDelayMs` too low for this device | Raise `streamDelayMs` |
 | Lip sync is poor | Noisy or unclear audio | See [Best results](#best-results) |
 
-## FAQ
+## Model and training data
 
-**Does it need the text or the TTS provider's viseme events?** No. It only listens to the audio, so it works with
-any provider and any voice.
+The model was trained on [LibriTTS-R](https://www.openslr.org/141/) (Koizumi et al., Interspeech 2023), licensed
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and derived from LibriTTS and LibriSpeech. Phoneme
+timings came from the [Montreal Forced Aligner](https://montreal-forced-aligner.readthedocs.io/) (McAuliffe et al.,
+Interspeech 2017) and were mapped to visemes. The training data itself is not redistributed here.
 
-**Is any audio sent to a server?** No. Everything runs in the browser. The only network requests are the avatar and
-the model file.
+# FAQ
 
-**Which languages work?** It's trained on English and holds up reasonably on other languages tested. See
-[Accuracy and limitations](#accuracy-and-limitations).
+**Which should I use?** Realistic Avatars when you want a photorealistic person with no 3D work, for $0.02 a minute.
+The open-source lip sync when you have, or want, your own 3D avatars and prefer it free and fully in the browser.
 
-**Which avatars work?** Any `.glb` with Oculus viseme morph targets, or other morph names mapped with
+**Do they need the text or the TTS provider's viseme events?** No. Both follow the audio alone, so they work with any
+provider and any voice.
+
+**Is any audio sent to a server?** With the open-source lip sync, no: everything runs in the browser, and the only
+network requests are the avatar and the model file. Realistic Avatars receive your agent's voice to animate the
+avatar; it isn't stored.
+
+**Which languages work?** The open-source model is trained on English and holds up reasonably on other languages
+tested; see [Accuracy and limitations](#accuracy-and-limitations).
+
+**Which 3D avatars work?** Any `.glb` with Oculus viseme morph targets, or other morph names mapped with
 `morphTargets`.
 
-**Can I use it in a commercial product?** Not under the free licence: it's for personal and non-commercial use.
-For commercial use, get a licence from [InterviewFlowAI](https://interviewflowai.com). See
-[License and commercial use](#license).
+**Can I use it in a commercial product?** Yes. The SDK and the lip-sync model are MIT licensed. Realistic Avatars are
+billed at $0.02 per minute of session.
 
-**Can I run it on a server, e.g. in Node?** The package targets browsers: it renders with WebGL and plays audio with
-Web Audio.
+**Is there a free option?** Yes: the [open-source 3D lip sync](#open-source-3d-lip-sync) is free for any use, with your
+own 3D avatars, directly in the browser. Realistic Avatars are pay as you go with no minimum; one dollar of credits
+is 50 minutes.
 
-## Demo
-
-Try it live at **[talking-avatar.dev/demo](https://talking-avatar.dev/demo)**: sample TTS voices in 9 languages, your
-own audio files and your microphone, on both bundled avatars.
-
-Built and maintained by [InterviewFlowAI](https://interviewflowai.com).
-
-## Development
+# Development
 
 ```sh
 npm install
-npm test           # model parity with the PyTorch reference, resampler, viseme timing, coarticulation
+npm test           # model parity with the PyTorch reference, resampler, viseme timing, coarticulation, LiveAvatar
 npm run typecheck
 npm run build      # dist/: ESM bundles, type declarations, viseme-model.bin
 ```
@@ -444,6 +652,8 @@ npm run build      # dist/: ESM bundles, type declarations, viseme-model.bin
 ```
 src/
   TalkingAvatar.ts    public class: audio playback, capture and timing
+  server.ts           LiveAvatar: Realistic Avatars, on your server
+  live.ts             LiveAvatarView: Realistic Avatars, in the page
   react.tsx           React component
   renderer.ts         three.js scene, framing, viseme → morph targets
   visemeModel.ts      the model: log-mel features + causal conv net, plain JS
@@ -454,27 +664,16 @@ model/                viseme-model.bin
 test/                 node:test suites and fixtures
 ```
 
-## Contributing
+# Contributing
 
 Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Changes are listed in
 [CHANGELOG.md](CHANGELOG.md), and security issues should be reported as described in [SECURITY.md](SECURITY.md).
 
-## Model and training data
-
-The model was trained on [LibriTTS-R](https://www.openslr.org/141/) (Koizumi et al., Interspeech 2023), licensed
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and derived from LibriTTS and LibriSpeech. Phoneme
-timings came from the [Montreal Forced Aligner](https://montreal-forced-aligner.readthedocs.io/) (McAuliffe et al.,
-Interspeech 2017) and were mapped to visemes. The training data itself is not redistributed here.
-
 <a id="license"></a>
 
-## License and commercial use
+# License
 
-The SDK and the model are source-available under the
-[PolyForm Noncommercial License 1.0.0](LICENSE), Copyright (c) 2026 InterviewFlowAI.
+The SDK and the lip-sync model are [MIT](LICENSE) licensed, Copyright (c) 2026 InterviewFlowAI: free for any use,
+commercial included. Realistic Avatars are a paid service, billed per minute to your account.
 
-- **Free** for personal uses (research and experiments for public knowledge, personal study, hobby projects) and
-  for non-commercial organisations (charities, educational institutions, public research organisations, government
-  bodies). See the [licence](LICENSE) for the exact terms.
-- **Commercial use requires a licence from InterviewFlowAI**: using it in a product, service or work done for a
-  business. Contact [InterviewFlowAI](https://interviewflowai.com) for terms.
+Built and maintained by [InterviewFlowAI](https://interviewflowai.com).

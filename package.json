@@ -1,8 +1,8 @@
 {
   "name": "@interviewflowai/talking-avatar",
   "version": "0.1.1",
-  "description": "Real-time lip sync for 3D avatars from any audio stream, by InterviewFlowAI. Free for personal and non-commercial use.",
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "description": "Talking avatars for voice agents, by InterviewFlowAI: real-time lip sync for 3D avatars in the browser, and photoreal live avatars streamed to your page. MIT licensed.",
+  "license": "MIT",
   "author": "InterviewFlowAI",
   "repository": {
     "type": "git",
@@ -22,6 +22,14 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js"
     },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./live": {
+      "types": "./dist/live.d.ts",
+      "import": "./dist/live.js"
+    },
     "./viseme-model.bin": "./dist/viseme-model.bin"
   },
   "files": [
@@ -36,7 +44,11 @@
     "three",
     "webaudio",
     "tts",
-    "talking-head"
+    "talking-head",
+    "live-avatar",
+    "photoreal",
+    "webrtc",
+    "voice-agent"
   ],
   "scripts": {
     "build": "rm -rf dist && vite build && tsc -p tsconfig.build.json && cp model/viseme-model.bin dist/",
@@ -50,6 +62,9 @@
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "three": {
       "optional": true
     }
   },

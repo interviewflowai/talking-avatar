@@ -38,9 +38,8 @@ CI runs the same checks on Node 20, 22 and 24.
 
 ## Licensing of contributions
 
-The project is licensed under the PolyForm Noncommercial License 1.0.0, and InterviewFlowAI also offers commercial
-licences. Before your first pull request is merged, you'll be asked to agree that InterviewFlowAI may include your
-contribution in both.
+The project is licensed under the MIT License. By opening a pull request, you agree that your contribution is
+licensed under it too.
 
 ## Reporting bugs
 
