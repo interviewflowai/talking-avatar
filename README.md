@@ -70,15 +70,12 @@ expressions and subtle head motion, streamed to your page in real time.
 
 ## See them talk
 
-Recorded live through the SDK, with OpenAI TTS voices.
+Two avatars, each speaking an OpenAI TTS voice. Click to watch, with sound.
 
 | Friendly host (`ava6`) | Friendly coach (`ava7`) |
 |---|---|
-| [![Friendly host demo](POSTER_URL_AVA6)](VIDEO_URL_AVA6) | [![Friendly coach demo](POSTER_URL_AVA7)](VIDEO_URL_AVA7) |
-
-VIDEO_URL_AVA6
-
-VIDEO_URL_AVA7
+| [![Friendly host, ava6: watch the demo](https://recordings.talking-avatar.dev/talking-avatar-ava6-poster.jpg)](https://recordings.talking-avatar.dev/talking-avatar-ava6-demo.mp4) | [![Friendly coach, ava7: watch the demo](https://recordings.talking-avatar.dev/talking-avatar-ava7-poster.jpg)](https://recordings.talking-avatar.dev/talking-avatar-ava7-demo.mp4) |
+| [▶ Watch the demo (15 s)](https://recordings.talking-avatar.dev/talking-avatar-ava6-demo.mp4) | [▶ Watch the demo (15 s)](https://recordings.talking-avatar.dev/talking-avatar-ava7-demo.mp4) |
 
 ## Pricing
 
