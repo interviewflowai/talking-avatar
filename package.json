@@ -1,6 +1,6 @@
 {
   "name": "@interviewflowai/talking-avatar",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Talking avatars for voice agents, by InterviewFlowAI: real-time lip sync for 3D avatars in the browser, and photoreal live avatars streamed to your page. MIT licensed.",
   "license": "MIT",
   "author": "InterviewFlowAI",
