@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://talking-avatar.dev/brand/talking-avatar-logo-dark.png" />
+  <img src="https://talking-avatar.dev/brand/talking-avatar-logo-light.png" alt="Talking Avatar" width="280" />
+</picture>
+
 # Talking Avatar
 
 [![npm](https://img.shields.io/npm/v/@interviewflowai/talking-avatar)](https://www.npmjs.com/package/@interviewflowai/talking-avatar)
@@ -8,7 +13,7 @@
 a lifelike talking avatar on your page, in real time.
 
 **[Website](https://talking-avatar.dev) · [Live demo](https://talking-avatar.dev/demo) ·
-[Create an account](https://talking-avatar.dev)**
+[Create an account](https://app.talking-avatar.dev)**
 
 | | **Realistic Avatars** | **Open-source 3D lip sync** |
 |---|---|---|
@@ -81,7 +86,7 @@ Two avatars, each speaking an OpenAI TTS voice. Click to watch, with sound.
 
 **$0.02 per minute** of avatar session, billed by the second. No subscription, no minimum, no setup fee.
 
-1. [Create an account](https://talking-avatar.dev).
+1. [Create an account](https://app.talking-avatar.dev).
 2. Add credits, and turn on auto top-up if you'd like your balance refilled automatically.
 3. Create an API key and start building.
 
