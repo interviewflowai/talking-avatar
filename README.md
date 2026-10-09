@@ -77,9 +77,9 @@ expressions and subtle head motion, streamed to your page in real time.
 
 Two avatars, each speaking an OpenAI TTS voice. Click to watch, with sound.
 
-| Friendly host (`ava6`) | Friendly coach (`ava7`) |
+| Friendly host | Friendly coach |
 |---|---|
-| [![Friendly host, ava6: watch the demo](https://recordings.talking-avatar.dev/talking-avatar-ava6-poster.jpg)](https://recordings.talking-avatar.dev/talking-avatar-ava6-demo.mp4) | [![Friendly coach, ava7: watch the demo](https://recordings.talking-avatar.dev/talking-avatar-ava7-poster.jpg)](https://recordings.talking-avatar.dev/talking-avatar-ava7-demo.mp4) |
+| [![Friendly host: watch the demo](https://recordings.talking-avatar.dev/talking-avatar-ava6-poster.jpg)](https://recordings.talking-avatar.dev/talking-avatar-ava6-demo.mp4) | [![Friendly coach: watch the demo](https://recordings.talking-avatar.dev/talking-avatar-ava7-poster.jpg)](https://recordings.talking-avatar.dev/talking-avatar-ava7-demo.mp4) |
 | [▶ Watch the demo (15 s)](https://recordings.talking-avatar.dev/talking-avatar-ava6-demo.mp4) | [▶ Watch the demo (15 s)](https://recordings.talking-avatar.dev/talking-avatar-ava7-demo.mp4) |
 
 ## Pricing
@@ -114,7 +114,7 @@ import { LiveAvatar } from "@interviewflowai/talking-avatar/server";
 
 const avatar = await LiveAvatar.start({
   apiKey: process.env.TALKING_AVATAR_API_KEY, // tav_…
-  avatar: "ava6",
+  avatar: "your-avatar-id", // from the dashboard's Quickstart
   sampleRate: 24000,                           // your TTS audio's sample rate
 });
 
@@ -169,7 +169,7 @@ publish-only token for it; your LiveKit secrets stay with you.
 ```js
 const avatar = await LiveAvatar.start({
   apiKey: process.env.TALKING_AVATAR_API_KEY,
-  avatar: "ava6",
+  avatar: "your-avatar-id", // from the dashboard's Quickstart
   livekit: { url: LIVEKIT_URL, token: avatarToken }, // video track "avatar", voice track "avatar-audio"
 });
 tts.on("audio", (pcm) => avatar.pushAudio(pcm));
@@ -181,15 +181,15 @@ Your LiveKit client plays the tracks, so `LiveAvatarView` isn't needed.
 
 ### Avatars
 
-| ID | Name | Style |
-|---|---|---|
-| `ava4` | Male interviewer: dark suit, office | Professional |
-| `ava5` | Female interviewer: blazer, office | Professional |
-| `ava6` | Friendly host: navy henley, home study | Casual |
-| `ava7` | Friendly coach: knit cardigan, living room | Casual |
+Professional and casual avatars are ready to use. The current list, with previews and each avatar's ID, is in the
+[dashboard's Quickstart](https://app.talking-avatar.dev/quickstart).
 
 All avatars stream at 832×468 (16:9), 25 frames per second. `LiveAvatarView` fits the video inside its container
-without cropping. More avatars are on the way; previews are in the dashboard.
+without cropping.
+
+**Custom avatars:** your own face or your brand's presenter, $199 per avatar (one time). Request one from the
+[dashboard](https://app.talking-avatar.dev/custom-avatar); we reply with a payment link, then you send a short video and
+voice recording with the signed consent of the person on camera. Sessions cost the usual $0.02 a minute.
 
 ### Sessions and errors
 
@@ -215,7 +215,7 @@ Resolves with a `LiveAvatar` once the avatar is live.
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `apiKey` | `string` | required | Your `tav_…` key. Keep it on your server. |
-| `avatar` | `string` | required | An avatar ID, such as `"ava6"`. |
+| `avatar` | `string` | required | An avatar ID, from the dashboard's Quickstart. |
 | `sampleRate` | `8000 \| 12000 \| 16000 \| 24000 \| 48000` | `24000` | Your TTS audio's sample rate (PCM16 mono). |
 | `livekit` | `{ url, token, publishAudio?, audioTrackName? }` | | Join your LiveKit room instead of streaming to `LiveAvatarView`. With `publishAudio: false` you play the voice yourself and pass `playAtMs` to `pushAudio`. |
 | `WebSocket` | class | global `WebSocket` | For Node.js 18 and 20: `import WebSocket from "ws"`. |

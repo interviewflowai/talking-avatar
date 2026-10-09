@@ -4,7 +4,7 @@ import type { ViewRequest, ViewResponse } from "./live";
  * Realistic Avatars, server side: a photorealistic avatar that speaks your agent's voice, streamed to your users.
  * One LiveAvatar per conversation. It holds your API key, so it runs on your server, never in the browser.
  *
- *   const avatar = await LiveAvatar.start({ apiKey, avatar: "ava4" })
+ *   const avatar = await LiveAvatar.start({ apiKey, avatar: "your-avatar-id" })
  *   tts.on("data", (pcm) => avatar.pushAudio(pcm))
  *
  * Direct output (the default) streams the avatar and its voice to your page over WebRTC: give the page one route
@@ -22,7 +22,7 @@ export type SampleRate = 8000 | 12000 | 16000 | 24000 | 48000;
 export interface LiveAvatarOptions {
   /** Your tav_… API key, from the dashboard. Billed per minute from start until close. */
   apiKey: string;
-  /** Which avatar, e.g. "ava4". See the dashboard for the list. */
+  /** Which avatar: an ID from the dashboard's Quickstart. */
   avatar: string;
   /** Your TTS audio's sample rate (PCM16 mono). Default 24000. */
   sampleRate?: SampleRate;
