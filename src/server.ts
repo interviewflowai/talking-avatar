@@ -21,9 +21,7 @@ export type SampleRate = 8000 | 12000 | 16000 | 24000 | 48000;
 
 export interface LiveAvatarOptions {
   /** Your tav_… API key, from the dashboard. Billed per minute from start until close. */
-  apiKey?: string;
-  /** @internal InterviewFlowAI's own services: the API's shared secret instead of an API key. */
-  secret?: string;
+  apiKey: string;
   /** Which avatar, e.g. "ava4". See the dashboard for the list. */
   avatar: string;
   /** Your TTS audio's sample rate (PCM16 mono). Default 24000. */
@@ -125,7 +123,7 @@ export class LiveAvatar {
   }
 
   private constructor(options: LiveAvatarOptions) {
-    if (!options.apiKey && !options.secret) throw new LiveAvatarError(4001, "apiKey is required");
+    if (!options.apiKey) throw new LiveAvatarError(4001, "apiKey is required");
     const Ws = options.WebSocket ?? (globalThis as { WebSocket?: WebSocketClass }).WebSocket;
     if (!Ws) throw new Error("talking-avatar: no WebSocket in this runtime (Node < 22): pass `WebSocket` from the ws package");
     this.sampleRate = options.sampleRate ?? 24000;
