@@ -55,6 +55,7 @@ Both ship in one package, [`@interviewflowai/talking-avatar`](https://www.npmjs.
 - [FAQ](#faq)
 - [Development](#development)
 - [Contributing](#contributing)
+- [Supported by](#supported-by)
 - [License](#license)
 
 # Realistic Avatars
@@ -670,6 +671,13 @@ test/                 node:test suites and fixtures
 
 Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Changes are listed in
 [CHANGELOG.md](CHANGELOG.md), and security issues should be reported as described in [SECURITY.md](SECURITY.md).
+
+# Supported by
+
+Talking Avatar is supported by [AWS Activate](https://aws.amazon.com/startups/),
+[Cloudflare for Startups](https://www.cloudflare.com/startups/), [PostHog](https://posthog.com),
+[Microsoft for Startups](https://www.microsoft.com/en-us/startups), [AssemblyAI](https://www.assemblyai.com), and
+[Google for Startups](https://startup.google.com).
 
 <a id="license"></a>
 
