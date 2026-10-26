@@ -4,7 +4,20 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.2.0] - 2026-10-26
+
+### Added
+
+- Voice agent links: `createAgentLink`, `listAgentLinks` and `deleteAgentLink` (`@interviewflowai/talking-avatar/server`)
+  make, list and delete the links to your private voice agents with your API key, each with an expiry and an optional
+  number of calls. Failed requests throw `TalkingAvatarApiError`.
+
+### Changed
+
+- Close code 4002 now also ends a running session, when the account runs out of credits or reaches its monthly
+  spending limit (checked every 30 seconds).
+
+## [0.1.3] - 2026-10-09
 
 ### Added
 

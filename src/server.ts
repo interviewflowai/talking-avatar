@@ -1,5 +1,7 @@
 import type { ViewRequest, ViewResponse } from "./live";
 
+export * from "./agentLinks";
+
 /**
  * Realistic Avatars, server side: a photorealistic avatar that speaks your agent's voice, streamed to your users.
  * One LiveAvatar per conversation. It holds your API key, so it runs on your server, never in the browser.
@@ -55,7 +57,10 @@ export interface LiveAvatarEvents {
   close: (code: number, reason: string) => void;
 }
 
-/** Why a session failed or ended: `code` is the WebSocket close code (4001 key, 4002 balance, 4003 3-hour limit). */
+/**
+ * Why a session failed or ended: `code` is the WebSocket close code (4001 key, 4002 out of credits or over the monthly
+ * spending limit, 4003 3-hour limit).
+ */
 export class LiveAvatarError extends Error {
   constructor(readonly code: number, message: string) {
     super(`talking-avatar: ${message}`);
@@ -65,7 +70,7 @@ export class LiveAvatarError extends Error {
 
 const CLOSE_REASONS: Record<number, string> = {
   4001: "invalid or missing API key",
-  4002: "balance below one minute: top up in the dashboard",
+  4002: "out of credits, or the monthly spending limit is reached: see Billing in the dashboard",
   4003: "session reached its 3-hour limit",
   1011: "avatar stream lost",
 };
