@@ -104,6 +104,7 @@ The SDK has two parts, because your API key must stay on your server:
 | Import | Runs on | Does |
 |---|---|---|
 | `@interviewflowai/talking-avatar/server` → `LiveAvatar` | your server (Node.js 22+) | starts the avatar, sends your agent's voice, handles interruptions |
+| `@interviewflowai/talking-avatar/server` → `createAgentLink` | your server (Node.js 18+) | makes links to your private voice agents |
 | `@interviewflowai/talking-avatar/live` → `LiveAvatarView` | your page | shows the avatar with its voice, reconnects by itself |
 
 <a id="your-server"></a>
@@ -195,6 +196,8 @@ voice recording with the signed consent of the person on camera. Sessions cost t
 ### Sessions and errors
 
 A session is billed from the moment the avatar is live until you call `close()` (or your server disconnects).
+Running sessions are checked every 30 seconds, and end when your account runs out of credits or reaches the monthly
+spending limit you set on the dashboard's Billing page.
 `LiveAvatar.start` rejects with a `LiveAvatarError` when a session can't start, and the `close` event reports why a
 session ended:
 
@@ -202,8 +205,36 @@ session ended:
 |---|---|
 | `1000` | You closed the session |
 | `4001` | Invalid or missing API key |
-| `4002` | Balance below one minute: add credits or turn on auto top-up |
+| `4002` | Out of credits (below a minute's worth at the start, or used up during the session), or your monthly spending limit is reached: add credits, turn on auto top-up, or raise the limit |
 | `4003` | The session reached its 3-hour limit |
+
+<a id="voice-agent-links"></a>
+
+### Voice agent links
+
+A voice agent made in the dashboard can be private: then only people with one of its links can call it. Make the
+links on your server, one per user, each with an expiry and, if you like, a number of calls (1 for a one-time link):
+
+```js
+import { createAgentLink } from "@interviewflowai/talking-avatar/server";
+
+const link = await createAgentLink({
+  apiKey: process.env.TALKING_AVATAR_API_KEY,
+  agentId: "your-agent-id",                         // dashboard → Voice agents
+  name: "Interview with Jane",                      // optional, shown in the dashboard
+  expiresAt: new Date(Date.now() + 7 * 86400_000),  // default: in 24 hours
+  maxUses: 1,                                       // default: any number of calls
+});
+// link.url: send it, or put it in your page
+```
+
+```html
+<iframe src="LINK_URL&embed=1" allow="microphone; autoplay" style="width:100%;height:640px;border:0"></iframe>
+```
+
+`listAgentLinks({ apiKey, agentId })` lists them (with `uses`), and `deleteAgentLink({ apiKey, agentId, linkId })`
+stops one right away. They throw a `TalkingAvatarApiError` (with the HTTP `status`) when the request fails. Calls are
+billed to your balance like the agent's other calls.
 
 <a id="realistic-avatars-api-reference"></a>
 
