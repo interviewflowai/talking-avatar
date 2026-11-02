@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-11-02
+
+This package is now only the free, open-source 3D lip sync.
+
+### Added
+
+- Built-in 3D avatars: a female and a male avatar (Microsoft Rocketbox, MIT) ship in the package. `avatarUrl` is now
+  optional and defaults to the female one; `AVATARS.female` and `AVATARS.male` are their URLs (jsDelivr, pinned to
+  the installed version), and `@interviewflowai/talking-avatar/avatars/*.glb` serves them for self-hosting.
+
+### Removed
+
+- **Breaking:** the Realistic Avatars clients (`/server`: `LiveAvatar`, `createAgentLink`, `listAgentLinks`,
+  `deleteAgentLink`; `/live`: `LiveAvatarView`) moved to their own package,
+  [`@talkingavatar/sdk`](https://www.npmjs.com/package/@talkingavatar/sdk) (source:
+  [TalkingAvatar/sdk](https://github.com/TalkingAvatar/sdk)), with the same API. Install it and change
+  `@interviewflowai/talking-avatar/server` and `/live` to `@talkingavatar/sdk/server` and `/live`.
+
+### Changed
+
+- `three` is a required peer dependency again: everything in the package needs it.
+
 ## [0.2.0] - 2026-10-26
 
 ### Added

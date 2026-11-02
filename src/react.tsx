@@ -1,10 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type CSSProperties } from "react";
 import type { MorphTargetMap } from "./renderer";
-import { TalkingAvatar, type AvatarStatus } from "./TalkingAvatar";
+import { AVATARS, TalkingAvatar, type AvatarStatus } from "./TalkingAvatar";
 
 export interface TalkingAvatarViewProps {
-  /** A .glb avatar with Oculus viseme morph targets. Changing it swaps the avatar. */
-  avatarUrl: string;
+  /** A .glb avatar with Oculus viseme morph targets. Default: AVATARS.female. Changing it swaps the avatar. */
+  avatarUrl?: string;
   /** See TalkingAvatarOptions.morphTargets. Applied with avatarUrl. */
   morphTargets?: MorphTargetMap;
   /** Live audio to play and lip sync (e.g. a WebRTC stream). Pass null/undefined to stop. */
@@ -25,7 +25,7 @@ export interface TalkingAvatarViewProps {
  * `ref.current?.speak(url)`.
  */
 export const TalkingAvatarView = forwardRef<TalkingAvatar | null, TalkingAvatarViewProps>(function TalkingAvatarView(
-  { avatarUrl, morphTargets, stream, status = "listening", modelUrl, streamDelayMs, onError, className, style },
+  { avatarUrl = AVATARS.female, morphTargets, stream, status = "listening", modelUrl, streamDelayMs, onError, className, style },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);

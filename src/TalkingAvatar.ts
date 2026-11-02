@@ -10,12 +10,23 @@ const PACKAGE_CDN = `https://cdn.jsdelivr.net/npm/@interviewflowai/talking-avata
 /** This package version's copy of the lip-sync model on jsDelivr. Self-host it (see `modelUrl`) in production. */
 export const DEFAULT_MODEL_URL = `${PACKAGE_CDN}/viseme-model.bin`;
 
+/**
+ * The built-in 3D avatars (Microsoft Rocketbox, MIT), this package version's copies on jsDelivr. Pass one as
+ * `avatarUrl`; the female one is the default. Self-host them like the model (`@interviewflowai/talking-avatar/avatars/*`).
+ */
+export const AVATARS = {
+  female: `${PACKAGE_CDN}/avatars/female.glb`,
+  male: `${PACKAGE_CDN}/avatars/male.glb`,
+};
 
 export interface TalkingAvatarOptions {
   /** Element the avatar fills. It needs a size (the canvas follows it). */
   container: HTMLElement;
-  /** A .glb avatar with Oculus viseme morph targets (viseme_aa, viseme_PP, …), or see `morphTargets`. */
-  avatarUrl: string;
+  /**
+   * A .glb avatar with Oculus viseme morph targets (viseme_aa, viseme_PP, …), or see `morphTargets`.
+   * Default: AVATARS.female; AVATARS.male is the other built-in one.
+   */
+  avatarUrl?: string;
   /**
    * For avatars whose morph targets have other names: the avatar's name(s) for each standard name the SDK drives,
    * e.g. `{ viseme_PP: ["MouthClosed"], eyeBlinkLeft: "Blink_L" }`. Avatars named h_expressions.*_h are mapped
@@ -116,7 +127,7 @@ export class TalkingAvatar {
     this.streamDelayS = (options.streamDelayMs ?? DEFAULT_STREAM_DELAY_MS) / 1000;
     this.onError = options.onError ?? ((error) => console.error(error));
     this.renderer = new AvatarRenderer(options.container, () => this.frameNow());
-    this.ready = this.setAvatar(options.avatarUrl, options.morphTargets);
+    this.ready = this.setAvatar(options.avatarUrl ?? AVATARS.female, options.morphTargets);
     this.ready.catch(() => {}); // reported through onError; awaiting `ready` is optional
     loadModel(this.modelUrl).catch((error: Error) => this.onError(error)); // warm up
   }

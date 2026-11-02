@@ -1,7 +1,7 @@
 {
   "name": "@interviewflowai/talking-avatar",
-  "version": "0.2.0",
-  "description": "Talking avatars for voice agents, by InterviewFlowAI: real-time lip sync for 3D avatars in the browser, and photoreal live avatars streamed to your page. MIT licensed.",
+  "version": "0.3.0",
+  "description": "Free, open-source (MIT) talking avatars for the browser: real-time lip sync for 3D avatars from any audio (TTS, voice agents, microphone), with built-in male and female avatars. No server, no API key.",
   "license": "MIT",
   "author": "InterviewFlowAI",
   "repository": {
@@ -22,15 +22,8 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js"
     },
-    "./server": {
-      "types": "./dist/server.d.ts",
-      "import": "./dist/server.js"
-    },
-    "./live": {
-      "types": "./dist/live.d.ts",
-      "import": "./dist/live.js"
-    },
-    "./viseme-model.bin": "./dist/viseme-model.bin"
+    "./viseme-model.bin": "./dist/viseme-model.bin",
+    "./avatars/*": "./dist/avatars/*"
   },
   "files": [
     "dist",
@@ -45,13 +38,14 @@
     "webaudio",
     "tts",
     "talking-head",
-    "live-avatar",
-    "photoreal",
     "webrtc",
-    "voice-agent"
+    "voice-agent",
+    "open-source",
+    "3d-avatar",
+    "rocketbox"
   ],
   "scripts": {
-    "build": "rm -rf dist && vite build && tsc -p tsconfig.build.json && cp model/viseme-model.bin dist/",
+    "build": "rm -rf dist && vite build && tsc -p tsconfig.build.json && cp model/viseme-model.bin dist/ && cp -R avatars dist/",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "tsx --test test/*.test.ts",
     "prepublishOnly": "npm run typecheck && npm test && npm run build"
@@ -62,9 +56,6 @@
   },
   "peerDependenciesMeta": {
     "react": {
-      "optional": true
-    },
-    "three": {
       "optional": true
     }
   },
