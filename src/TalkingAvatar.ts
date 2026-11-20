@@ -285,7 +285,10 @@ export class TalkingAvatar {
       }
       this.context = context;
       return context;
-    })();
+    })().catch((error) => {
+      this.contextReady = null; // a failed attempt isn't cached; a later call retries (as loadModel does)
+      throw error;
+    });
     const context = await this.contextReady;
     if (context.state === "suspended") await context.resume();
     return context;
