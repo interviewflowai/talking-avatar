@@ -280,6 +280,9 @@ export class TalkingAvatar {
       const url = URL.createObjectURL(new Blob([CAPTURE_WORKLET], { type: "text/javascript" }));
       try {
         await context.audioWorklet.addModule(url);
+      } catch (error) {
+        void context.close(); // don't leak a context per failed attempt now that we retry
+        throw error;
       } finally {
         URL.revokeObjectURL(url);
       }
